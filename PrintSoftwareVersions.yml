@@ -1,0 +1,29 @@
+name: safety-culture-hub-version-check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # === 1. Рівень обробки даних ===
+  check-processing-layer:
+    name: Перевірка версій середовища обробки даних
+    runs-on: ubuntu-latest
+    steps:
+      - name: Перевірка версії Node.js
+        run: node --version
+      - name: Перевірка версії npm
+        run: npm --version
+      - name: Перевірка версії Python
+        run: python3 --version
+      - name: Перевірка версії pip
+        run: pip --version
+
+  # === 2. Рівень доступу до даних ===
+  check-database-layer:
+    name: Перевірка версій СКБД
+    runs-on: ubuntu-latest
+    steps:
+      - name: Перевірка версії PostgreSQL
+        run: psql --version
+      - name: Перевірка версії SQLite
+        run: sqlite3 --version

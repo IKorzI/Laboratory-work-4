@@ -1,0 +1,24 @@
+name: JSON Schema Linter
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ValidateJSONSchema:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Встановлення Node.js і ajv-cli для валідації JSON Schema
+      - name: Install ajv-cli
+        run: |
+          npm install -g ajv-cli
+
+      # Перевірка відповідності JSON-схеми стандарту draft-2020-12
+      - name: Validate Schema.json
+        run: |
+          ajv validate -s Schema.json --spec=draft2020

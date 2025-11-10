@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Safety&Culture Hub Database",
+  "description": "Фізична схема нереляційної JSON-моделі системи Safety&Culture Hub: модулі безпеки, тести, показники води, працівники, регіони.",
+  "type": "object",
+  "properties": {
+    "region": {
+      "type": "object",
+      "description": "Регіон проживання працівника та вимірювання якості води",
+      "properties": {
+        "regionId": {
+          "type": "string",
+          "description": "Унікальний ідентифікатор регіону"
+        },
+        "name": {
+          "type": "string",
+          "description": "Назва регіону",
+          "pattern": "^[А-ЯІЇЄҐ][а-яіїєґ\\s-]{2,}$"
+        }
+      },
+      "required": ["regionId", "name"]
+    },
+
+    "worker": {
+      "type": "object",
+      "description": "Працівник підприємства, який користується системою",
+      "properties": {
+        "workerId": {
+          "type": "string",
+          "description": "Унікальний ідентифікатор працівника"
+        },
+        "surname": {
+          "type": "string",
+          "description": "Прізвище працівника",
+          "pattern": "^[A-ZА-ЯІЇЄҐ][a-zа-яіїєґ\\-']{1,30}$"
+        },
+        "position": {
+          "type": "string",
+          "description": "Посада працівника",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "region": {
+          "$ref": "#/properties/region"
+        }
+      },
+      "required": ["workerId", "surname", "position", "region"]
+    },
+
+    "safetyModule": {
+      "type": "object",
+      "description": "Модуль безпеки праці з інструкціями та тестами",
+      "properties": {
+        "moduleId": {
+          "type": "string",
+          "description": "Унікальний ідентифікатор модуля"
+        },
+        "name": {
+          "type": "string",
+          "description": "Назва модуля безпеки",
+          "minLength": 3,
+          "maxLength": 50
+        },
+        "instructions": {
+          "type": "array",
+          "description": "Перелік інструкцій з безпеки праці",
+          "items": {
+            "type": "object",
+            "properties": {
+              "instructionId": {
+                "type": "string",
+                "description": "Ідентифікатор інструкції"
+              },
+              "name": {
+                "type": "string",
+                "description": "Назва інструкції",
+                "minLength": 3
+              },
+              "language": {
+                "type": "string",
+                "description": "Мова інструкції (наприклад 'uk' або 'en')",
+                "pattern": "^[a-z]{2}$"
+              },
+              "content": {
+                "type": "string",
+                "description": "Текст інструкції",
+                "minLength": 10
+              },
+              "type": {
+                "type": "string",
+                "description": "Тип інструкції (загальна, спеціальна, технічна)"
+              },
+              "test": {
+                "type": "object",
+                "description": "Тест, який відповідає даній інструкції",
+                "properties": {
+                  "testId": {
+                    "type": "string",
+                    "description": "Ідентифікатор тесту"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Назва тесту",
+                    "minLength": 3
+                  },
+                  "questionCount": {
+                    "type": "integer",
+                    "description": "Кількість питань у тесті",
+                    "minimum": 1,
+                    "maximum": 50
+                  },
+                  "results": {
+                    "type": "array",
+                    "description": "Результати проходження тесту",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "resultId": {
+                          "type": "string",
+                          "description": "Ідентифікатор результату"
+                        },
+                        "score": {
+                          "type": "integer",
+                          "description": "Кількість набраних балів",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "dateCompleted": {
+                          "type": "string",
+                          "description": "Дата проходження тесту",
+                          "format": "date"
+                        },
+                        "advices": {
+                          "type": "array",
+                          "description": "Список порад після проходження тесту",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "adviceId": {
+                                "type": "string"
+                              },
+                              "text": {
+                                "type": "string",
+                                "description": "Текст поради",
+                                "minLength": 5
+                              },
+                              "type": {
+                                "type": "string",
+                                "description": "Тип поради (мотиваційна, технічна)"
+                              }
+                            },
+                            "required": ["text"]
+                          }
+                        }
+                      },
+                      "required": ["resultId", "score", "dateCompleted"]
+                    },
+                    "minItems": 0
+                  }
+                },
+                "required": ["testId", "name", "questionCount"]
+              }
+            },
+            "required": ["instructionId", "name", "language", "content"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": ["moduleId", "name", "instructions"]
+    },
+
+    "waterModule": {
+      "type": "object",
+      "description": "Модуль моніторингу якості води",
+      "properties": {
+        "moduleId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 3
+        },
+        "waterNetService": {
+          "type": "object",
+          "description": "Сервіс WaterNet, що повертає показники якості води",
+          "properties": {
+            "serviceId": {
+              "type": "string"
+            },
+            "serviceName": {
+              "type": "string",
+              "description": "Назва API сервісу WaterNet"
+            },
+            "qualityIndicators": {
+              "type": "array",
+              "description": "Дані про якість води за датами та регіонами",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "qualityId": {
+                    "type": "string"
+                  },
+                  "measurementDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "unit": {
+                    "type": "string",
+                    "description": "Одиниця виміру (мг/л, pH)"
+                  },
+                  "cleaningAdvices": {
+                    "type": "array",
+                    "description": "Список порад щодо очищення води",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "waterAdviceId": {
+                          "type": "string"
+                        },
+                        "method": {
+                          "type": "string",
+                          "description": "Метод очищення води (наприклад, фільтрація, кип’ятіння)"
+                        }
+                      },
+                      "required": ["method"]
+                    },
+                    "minItems": 0
+                  }
+                },
+                "required": ["qualityId", "measurementDate", "value", "unit"]
+              },
+              "minItems": 1
+            }
+          },
+          "required": ["serviceId", "serviceName", "qualityIndicators"]
+        }
+      },
+      "required": ["moduleId", "name", "waterNetService"]
+    }
+  },
+  "required": []
+}

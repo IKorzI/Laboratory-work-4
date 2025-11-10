@@ -16,4 +16,4 @@ jobs:
         run: npm install -g ajv-cli
 
       - name: Validate JSON Schema (ignore unknown formats)
-        run: ajv compile -s Schema.json --spec=draft2020 --strict=false
+        run: ajv compile -s DataSchemaModified.json --spec=draft2020 --strict=false

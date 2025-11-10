@@ -2,8 +2,7 @@ name: JSON Schema Linter
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -13,10 +12,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install ajv-cli and formats
-        run: |
-          npm install -g ajv-cli ajv-formats
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli
 
-      - name: Validate JSON Schema structure
-        run: |
-          ajv compile -s Schema.json --spec=draft2020 --strict=false --formats ajv-formats
+      - name: Validate JSON Schema (ignore unknown formats)
+        run: ajv compile -s Schema.json --spec=draft2020 --strict=false

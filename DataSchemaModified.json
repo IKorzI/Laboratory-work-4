@@ -1,24 +1,44 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Safety&Culture Hub Database",
-  "description": "Фізична схема нереляційної JSON-моделі системи Safety&Culture Hub.",
+  "description": "Тестова модифікація для перевірки помилки.",
   "type": "object",
-  "properties": {1
+  "properties": {
     "region": {
       "type": "object",
-      "description": "Регіон проживання працівника та вимірювання якості води",
+      "description": "Регіон проживання працівника",
       "properties": {
         "regionId": {
-          "type": "string",
+          "type": "integer",         // 🧨 помилка: нижче $ref вимагає string
           "description": "Унікальний ідентифікатор регіону"
         },
         "name": {
-          "typpe": "string", 
-          "description": "Назва регіону (⚠️ помилка — неправильне ключове слово 'typpe')",
+          "type": "string",
+          "description": "Назва регіону",
           "pattern": "^[0-9]+$"
         }
       },
       "required": ["regionId", "name"]
+    },
+
+    "worker": {
+      "type": "object",
+      "description": "Працівник підприємства",
+      "properties": {
+        "workerId": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "region": {
+          "$ref": "#/definitions/region"   // 🧨 помилка: розділу "definitions" не існує
+        }
+      },
+      "required": ["workerId", "surname", "region"]
     }
-  }
+  },
+
+  // 🧨 ще одна помилка: неправильний ключ замість "required"
+  "requiered": ["region", "worker"]
 }

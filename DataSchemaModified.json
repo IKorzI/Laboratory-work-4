@@ -3,7 +3,7 @@
   "title": "Safety&Culture Hub Database",
   "description": "Фізична схема нереляційної JSON-моделі системи Safety&Culture Hub.",
   "type": "object",
-  "properties": {
+  "properties": {1
     "region": {
       "type": "object",
       "description": "Регіон проживання працівника та вимірювання якості води",
